@@ -4,7 +4,7 @@
 
 var customersApp = angular.module('customers');
 
-customersApp.controller('CustomersController', ['$scope', '$stateParams', 'Authentication', 'Customers', '$modal', '$log'
+customersApp.controller('CustomersController', ['$scope', '$stateParams', 'Authentication', 'Customers', '$modal', '$log',
 	function($scope, $stateParams, Authentication, Customers, $modal, $log) {
 
 		this.authentication = Authentication
@@ -13,16 +13,27 @@ customersApp.controller('CustomersController', ['$scope', '$stateParams', 'Authe
 		this.customers = Customers.query();
 
 		// Open a modal window to Update a single customer record
-		$scope.open = function (size) {
+		this.modalUpdate = function (size, selectedCustomer) {
 
 			var modalInstance = $modal.open({
 				animation: true,
-				templateUrl: 'myModalContent.html',
-				controller: 'ModalInstanceCtrl',
+				templateUrl: 'modules/customers/views/edit-customer.client.view.html',
+				controller: function ($scope, $modalInstance, customer) {
+					$scope.customer = customer;
+
+					$scope.ok = function () {
+						$modalInstance.close($scope.customer);
+					};
+
+					$scope.cancel = function () {
+						$modalInstance.dismiss('cancel');
+					};
+
+				},
 				size: size,
 				resolve: {
-					items: function () {
-						return $scope.items;
+					customer: function () {
+						return selectedCustomer;
 					}
 				}
 			});
@@ -42,8 +53,19 @@ customersApp.controller('CustomersCreateController', ['$scope', 'Customers',
 	}
 ]);
 
-customersApp.controller('CustomersEditController', ['$scope', 'Customers',
+customersApp.controller('CustomersUpdateController', ['$scope', 'Customers',
 	function($scope, Customers) {
+
+		// Update existing Customer
+		this.update = function(updatedCustomer) {
+			var customer = updatedCustomer;
+
+			customer.$update(function() {
+
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		};
 
 	}
 ]);
@@ -98,19 +120,6 @@ customersApp.controller('CustomersEditController', ['$scope', 'Customers',
 		//		});
 		//	}
 		//};
-        //
-		//// Update existing Customer
-		//$scope.update = function() {
-		//	var customer = $scope.customer;
-        //
-		//	customer.$update(function() {
-		//		$location.path('customers/' + customer._id);
-		//	}, function(errorResponse) {
-		//		$scope.error = errorResponse.data.message;
-		//	});
-		//};
-        //
-        //
         //
 		//// Find existing Customer
 		//$scope.findOne = function() {
