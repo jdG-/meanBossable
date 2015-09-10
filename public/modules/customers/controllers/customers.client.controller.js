@@ -21,9 +21,7 @@ customersApp.controller('CustomersController', ['$scope', '$stateParams', 'Authe
 				controller: function ($scope, $modalInstance) {
 
 					$scope.ok = function () {
-						if (createCustomerForm.$valid) {
-							$modalInstance.close();
-						}
+						$modalInstance.close();
 					};
 
 					$scope.cancel = function () {
@@ -50,9 +48,7 @@ customersApp.controller('CustomersController', ['$scope', '$stateParams', 'Authe
 					$scope.customer = customer;
 
 					$scope.ok = function () {
-						if (updateCustomerForm.$valid) {
-							$modalInstance.close($scope.customer);
-						}
+						$modalInstance.close($scope.customer);
 					};
 
 					$scope.cancel = function () {
@@ -74,6 +70,24 @@ customersApp.controller('CustomersController', ['$scope', '$stateParams', 'Authe
 				$log.info('Modal dismissed at: ' + new Date());
 			});
 		};
+
+
+		// Remove existing Customer
+		this.remove = function(customer) {
+			if ( customer ) {
+				customer.$remove();
+
+				for (var i in this.customers) {
+					if (this.customers [i] === customer) {
+						this.customers.splice(i, 1);
+					}
+				}
+			} else {
+				this.customer.$remove(function() {
+				});
+			}
+		};
+
 	}
 ]);
 
@@ -143,29 +157,3 @@ customersApp.directive('customerList', [function () {
 		}
 	};
 }]);
-
-
-		//// Remove existing Customer
-		//$scope.remove = function(customer) {
-		//	if ( customer ) {
-		//		customer.$remove();
-        //
-		//		for (var i in $scope.customers) {
-		//			if ($scope.customers [i] === customer) {
-		//				$scope.customers.splice(i, 1);
-		//			}
-		//		}
-		//	} else {
-		//		$scope.customer.$remove(function() {
-		//			$location.path('customers');
-		//		});
-		//	}
-		//};
-        //
-		//// Find existing Customer
-		//$scope.findOne = function() {
-		//	$scope.customer = Customers.get({
-		//		customerId: $stateParams.customerId
-		//	});
-		//};
-
