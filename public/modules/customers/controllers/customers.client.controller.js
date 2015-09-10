@@ -7,7 +7,7 @@ var customersApp = angular.module('customers');
 customersApp.controller('CustomersController', ['$scope', '$stateParams', 'Authentication', 'Customers', '$modal', '$log',
 	function($scope, $stateParams, Authentication, Customers, $modal, $log) {
 
-		this.authentication = Authentication
+		this.authentication = Authentication;
 
 		// Find a list of Customers
 		this.customers = Customers.query();
@@ -71,6 +71,17 @@ customersApp.controller('CustomersUpdateController', ['$scope', 'Customers',
 
 	}
 ]);
+
+customersApp.directive('customerList', [function () {
+	return {
+		restrict: 'E',
+		transclude: true,
+		templateUrl: 'modules/customers/views/customer-list-template.html',
+		link: function (scope, element, attrs) {
+
+		}
+	};
+}]);
 
 		//// Create new Customer
 		//$scope.create = function() {
